@@ -14,6 +14,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+
 			</resource>
 			<resource>
 				<directory>sql_scripts/mysql</directory>
@@ -614,6 +615,69 @@
 				<shipment.upload.populatedTemplate>ispyb-template6.2_shipment.xls</shipment.upload.populatedTemplate>
 			</properties>
 		</profile>
+
+		<profile>
+			<id>ispyb.site-HZB</id>
+			<activation>
+				<property>
+					<name>ispyb.site</name>
+					<value>HZB</value>
+				</property>
+			</activation>
+			
+			<properties>
+				<ispyb.dbDialect>MYSQL</ispyb.dbDialect>
+				<ispyb.dbJndiName.direct>java:jboss/ispyb_db_direct</ispyb.dbJndiName.direct>
+				<ispyb.authentication.method>LDAP</ispyb.authentication.method>
+				<ispyb.authorisation.proposals.source>database</ispyb.authorisation.proposals.source>
+							
+				<ldap.employee.resource>ldap://vsrv9.exp1401.bessy.de:389/</ldap.employee.resource>
+                                <ldap.people>ou=People,dc=esrf,dc=fr</ldap.people>
+                                <ldap.attribute>uid</ldap.attribute>
+
+				<ispyb.root.folder>${java.io.tmpdir}/${user.name}/ispyb/</ispyb.root.folder>
+				<ispyb.uploaded.root.folder>${ispyb.root.folder}upload/</ispyb.uploaded.root.folder>
+				
+				<ispyb.server.name.prod>localhost</ispyb.server.name.prod>
+				<ispyb.server.name.prod.alias>localhost</ispyb.server.name.prod.alias>
+				<ispyb.server.name.prod.ext>127.0.0.1</ispyb.server.name.prod.ext>
+				<ispyb.server.name.test>localhost</ispyb.server.name.test>
+				
+				<shipping.container.capacity>16</shipping.container.capacity>
+				<samplechanger.container.capacity>16</samplechanger.container.capacity>
+				<samplechanger.locations>5</samplechanger.locations>
+					
+				<ispyb.dataprocessing.denzo>true</ispyb.dataprocessing.denzo>
+				<ispyb.path.mappingstyle>HZB</ispyb.path.mappingstyle>
+				<ispyb.bcm>mxcube</ispyb.bcm>
+				
+				<mail.smtp.host>localhost</mail.smtp.host>
+				<mail.admin>${user.name}@localhost</mail.admin>
+				<mail.dev>${user.name}@localhost</mail.dev>
+				<mail.ispyb>${user.name}@localhost</mail.ispyb>
+				<mail.stores>${user.name}@localhost</mail.stores>
+				
+				<mail.report.industry.from>${user.name}@localhost</mail.report.industry.from>
+				<mail.report.industry.cc>${user.name}@localhost</mail.report.industry.cc>
+				<mail.report.industry.bcc></mail.report.industry.bcc>
+				
+				
+				<dictionary.site>HZB</dictionary.site>
+				<dictionary.bcm>mxCuBE</dictionary.bcm>
+				
+				<ispyb.authorisation.active>false</ispyb.authorisation.active>
+				
+				<ispyb.userportal.link>JSON</ispyb.userportal.link>
+				<ispyb.upload.folder.json>${ispyb.uploaded.root.folder}json/</ispyb.upload.folder.json>
+
+				<ispyb.shipping.reimburseddewars>false</ispyb.shipping.reimburseddewars>
+
+				<shipment.upload.template>ispyb-template6.2_shipment.xlt</shipment.upload.template>
+				<shipment.upload.populatedTemplate>ispyb-template6.2_shipment.xls</shipment.upload.populatedTemplate>
+
+
+			</properties>
+		</profile> 
 
 		<profile>
 			<id>ispyb.site-GENERIC</id>

@@ -106,13 +106,9 @@
 			<version>1.7.5</version>
 			<scope>runtime</scope>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
-
-
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

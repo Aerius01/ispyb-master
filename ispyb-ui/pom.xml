@@ -334,7 +334,7 @@
 					<execution>
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<echo message="xdoclet.home = ${xdoclet.home}" />
 								<path id="xdoclet.client.path">
 									<fileset dir="${xdoclet.home}">
@@ -372,7 +372,7 @@
 
 								</webdoclet>
 
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -456,7 +456,7 @@
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
+									<target>
 										<echo message="Copy securityfilter files ..." />
 										<copy
 											file="${basedir}/src/main/webapp/mergedir/servlet-securityfilter.xml"
@@ -472,7 +472,7 @@
 											overwrite="true" />
 										<echo message="Copy of securityfilter files done!" />
 										<echo message="project base direct: ${build.directory}" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 						</executions>

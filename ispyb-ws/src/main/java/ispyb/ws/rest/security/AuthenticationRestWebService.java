@@ -67,7 +67,7 @@ public class AuthenticationRestWebService extends RestWebService {
 			@QueryParam("site") String site) throws Exception {
 		String methodName = "authenticate";
 		long id = this.logInit(methodName, logger, login, site);
-		
+
 		/** siteId is need in some cases to get the sessions when, for instance, user is local contact **/
 		String siteId = "";
 		try {
@@ -92,7 +92,11 @@ public class AuthenticationRestWebService extends RestWebService {
 					case "ALBA":
 						roles = ALBALoginModule.authenticate(login, password);
 						break;
+					case "HZB":
+						roles = HZBLoginModule.authenticate(login, password);
+						break;
 					case "GENERIC":
+						System.out.println("generic");
 						roles = PropertyLoginModule.authenticate(login, password);
 						break;
 					default:

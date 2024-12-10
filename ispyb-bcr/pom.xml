@@ -285,7 +285,7 @@
 					<execution>
 						<phase>generate-sources</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<echo message="xdoclet.home = ${xdoclet.home}" />
 								<path id="xdoclet.client.path">
 									<fileset dir="${xdoclet.home}">
@@ -320,7 +320,7 @@
 
 								</webdoclet>
 
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>

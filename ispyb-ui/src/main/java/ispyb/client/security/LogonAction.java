@@ -107,6 +107,7 @@ public class LogonAction extends Action {
 			 **************************************/
 			if (Constants.SITE_AUTHENTICATION_METHOD.toString().trim().toUpperCase().equals("SIMPLE") ) {
 				
+				LOG.info("in simple method");
 				String userRolesNames = "Roles for user logged in: ";
 
 				// -----------
@@ -124,6 +125,7 @@ public class LogonAction extends Action {
 			 * AUTH USING LDAP
 			 **************************************/
 			if (Constants.SITE_AUTHENTICATION_METHOD.toString().trim().toUpperCase().equals("LDAP") && !Constants.SITE_IS_MAXIV() && !Constants.SITE_IS_SOLEIL() && !Constants.SITE_IS_EMBL()) {
+				LOG.info("in ldap method");
 				EmployeeVO employee = LdapConnection.findByUniqueIdentifier(userName);
 				userGivenName = employee.getGivenName() == null || employee.getGivenName().trim().equals("") ? "no given name"
 						: employee.getGivenName();

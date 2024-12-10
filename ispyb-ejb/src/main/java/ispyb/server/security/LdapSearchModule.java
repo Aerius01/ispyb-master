@@ -14,18 +14,26 @@
  */
 package ispyb.server.security;
 
-import ispyb.common.util.Constants;
-
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.List;
 
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-import javax.naming.ldap.InitialLdapContext;
+import com.unboundid.ldap.sdk.LDAPConnection;
+import com.unboundid.ldap.sdk.SearchRequest;
+import com.unboundid.ldap.sdk.SearchResult;
+import com.unboundid.ldap.sdk.SearchResultEntry;
+import com.unboundid.ldap.sdk.SearchScope;
+import com.unboundid.ldap.sdk.LDAPSearchException;
+import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.Filter;
+import com.unboundid.ldap.sdk.ResultCode;
+import com.unboundid.ldap.sdk.BindResult;
+
+import com.unboundid.ldap.sdk.ExtendedRequest;
+import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
+import com.unboundid.ldap.sdk.ExtendedResult;
+import com.unboundid.util.ssl.TrustStoreTrustManager;
+import com.unboundid.util.ssl.SSLUtil;
+import javax.net.ssl.SSLContext;
 
 import org.apache.log4j.Logger;
 
@@ -37,84 +45,71 @@ import org.apache.log4j.Logger;
 public class LdapSearchModule {
 
 	private final Logger LOG = Logger.getLogger(LdapSearchModule.class);
+	private	static String principalDNPrefix = "uid=";
+	private	static String principalDNSuffix = ",ou=People,dc=psf,dc=bessy,dc=de";
+	private	static String groupUniqueMemberName = "uniqueMember";
+	private	static String groupAttributeID = "cn";
+	private	static String groupCtxDN = "ou=ispyb,ou=Group,dc=psf,dc=bessy,dc=de";
+	private	static String server = "vsrv9.exp1401.bessy.de";
+	private	static String trustStorePath = "/ispyb-core/dependencies/jdk1.8.0_421/jre/lib/security/cacerts";
 
 	public LdapSearchModule() {
 
 	}
 	
-	public ArrayList<String> getUserGroups(String username) throws NamingException {
-		ArrayList<String> result = new ArrayList<String>();
+	public ArrayList<String> getUserGroups(String username) throws Exception {
+		ArrayList<String> myRoles = new ArrayList<String>();
+  
+		// Create the connection to the LDAP server over the non-secured port 389, and then start the
+		// TLS encyrption
+		LDAPConnection connection = new LDAPConnection(server, 389);
 
-		Properties env = new Properties();
-		// Map all option into the JNDI InitialLdapContext env
-		env.put("principalDNSuffix", "," +Constants.LDAP_people);
-		env.put("principalDNPrefix", "uid=");
-		env.put("allowEmptyPasswords", true);
-		env.put("java.naming.security.authentication", "simple");
-		env.put("groupCtxDN", Constants.LDAP_base);
-		env.put("java.naming.provider.url", Constants.LDAP_Employee_Resource);
-		env.put("groupUniqueMember", "uniqueMember");
-		env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-		env.put("groupAttributeID", "cn");
+		SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(trustStorePath));
+		SSLContext sslContext = sslUtil.createSSLContext();
+		StartTLSExtendedRequest startTLSRequest = new StartTLSExtendedRequest(sslContext);
 
-		// build user
-		String principalDNPrefix = "uid=";
-		String principalDNSuffix = "," +Constants.LDAP_people;
-		String userDN = principalDNPrefix + username + principalDNSuffix;
-		
-		// Connects to server
-		LOG.debug("Logging into LDAP server");
-		InitialLdapContext ctx = new InitialLdapContext(env, null);
-		LOG.debug("Logged into LDAP server");
-
-		// Search for Groups/Roles the user belongs
-		String groupCtxDN = Constants.LDAP_base;
-
-		// Search for any roles associated with the user
-		if (groupCtxDN != null) {
-
-			String groupUniqueMemberName = "uniqueMember";
-			String groupAttrName = "cn";
-
-			try {
-
-				// Set up criteria to search on
-				// e.g. (&(objectClass=groupOfUniqueNames)(uniqueMember=uid=ifx999,ou=People,dc=esrf,dc=fr))
-				String filter = new StringBuffer().append("(&").append("(objectClass=groupOfUniqueNames)")
-						.append("(" + groupUniqueMemberName + "=").append(userDN).append(")").append(")").toString();
-				// Set up search constraints
-				SearchControls cons = new SearchControls();
-				cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-				// Search
-				LOG.debug("Searching for groups in LDAP");
-				NamingEnumeration<SearchResult> answer = ctx.search(groupCtxDN, filter, cons);
-				while (answer.hasMore()) {
-					SearchResult sr = (SearchResult) answer.next();
-					Attributes attrs = sr.getAttributes();
-
-					Attribute groups = attrs.get(groupAttrName);
-					for (int r = 0; r < groups.size(); r++) {
-						Object value = groups.get(r);
-						String groupName = null;
-						groupName = value.toString();
-						// fill groups array
-						if (groupName != null && (groupName.startsWith(Constants.LOGIN_PREFIX_MX) || groupName.startsWith(Constants.LOGIN_PREFIX_IFX))) {
-							LOG.debug("Add "  + groupName +" to the group list");
-							result.add(groupName);
-						}
-					}
-				}
-				
-				LOG.debug("Search finished");
-				
-			} catch (NamingException e) {
-				LOG.debug("Failed to locate groups", e);
-			}
-
+		ExtendedResult startTLSResult;
+		try {
+			startTLSResult = connection.processExtendedOperation(startTLSRequest);
+		} catch (LDAPException le) {
+			startTLSResult = new ExtendedResult(le);
+			System.out.println("error: " + le.getMessage());
 		}
-		// Close the context to release the connection
-		ctx.close();
 		
-		return result;
+		// Look up all role groups to which the authenticated user pertains
+		// The filter is constructed as a series of AND (&) bool conditions from left to right
+		Filter filter = Filter.create("(&(objectClass=groupOfUniqueNames)(" + groupAttributeID + "=*)(" + 
+			groupUniqueMemberName + "=" + principalDNPrefix + username + ",dc=psf,dc=bessy,dc=de))");
+
+		SearchRequest searchReq = new SearchRequest(groupCtxDN, SearchScope.SUB, filter, groupAttributeID);
+		SearchResult searchResult;
+
+		try {
+			searchResult = connection.search(searchReq);
+			
+			for (SearchResultEntry entry : searchResult.getSearchEntries()) {
+				// Fill roles array
+				String roleName = entry.getAttributeValue("cn");
+				System.out.println("Found role: " + roleName);
+				if (roleName != null) {
+					myRoles.add(roleName);
+				}
+			}
+		} catch (LDAPSearchException lse) {
+			searchResult = lse.getSearchResult();
+			ResultCode resultCode = lse.getResultCode();
+			String errorMessageFromServer = lse.getDiagnosticMessage();
+
+			System.out.println("server message: " + errorMessageFromServer);
+		}
+
+		/** Any validated user is in role User **/
+		if (myRoles.size() == 0){
+			myRoles.add("User");
+		}
+
+		connection.close();
+
+		return myRoles;
 	}
 }

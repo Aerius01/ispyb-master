@@ -317,6 +317,7 @@ public class ToolsForBLSampleWebService {
 			SampleInfo[] sampleInfos = null;
 			String status = Constants.PROCESSING_STATUS;
 			String beamlineLoc = beamlineLocation;
+
 			if (Constants.SITE_IS_ESRF()) {
 				ESRFBeamlineEnum bl = ESRFBeamlineEnum.retrieveBeamlineWithName(beamlineLocation);
 				beamlineLoc = bl.getBeamlineName();
@@ -338,11 +339,14 @@ public class ToolsForBLSampleWebService {
 			sampleInfos = blSampleService.findForWSSampleInfoLight(proposalId, null, beamlineLoc, status);
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;
-			if (sampleInfos != null)
+			if (sampleInfos != null){
 				LOG.debug("findSampleInfoLightForProposal : " + proposalId + " nb samples = " + sampleInfos.length + " time = "
 						+ duration + " ms");
-			else
+			}
+			else {
 				LOG.debug("findSampleInfoLightForProposal : " + proposalId + " no samples " + " time = " + duration + " ms");
+			}
+
 			return sampleInfos;
 		} catch (Exception e) {
 			LOG.error("WS ERROR: findSampleInfoLightForProposal - " + StringUtils.getCurrentDate() + " - " + proposalId + ", "

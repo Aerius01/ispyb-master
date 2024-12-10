@@ -32,7 +32,7 @@ public final class Constants {
 	private static Properties mProp = PropertyLoader.loadProperties("ISPyB");
 
 	public enum SITE {
-		SOLEIL, EMBL, ESRF, MAXIV, ALBA, GENERIC
+		SOLEIL, EMBL, ESRF, MAXIV, ALBA, HZB, GENERIC
 	}
 
 	/*
@@ -98,6 +98,8 @@ public final class Constants {
 
 	public static final String SITE_ALBA = "ALBA";
 
+	public static final String SITE_HZB = "HZB";
+
 	public static final String SITE_GENERIC = "GENERIC";
 
 	public static final boolean SITE_IS_ESRF() {
@@ -114,6 +116,10 @@ public final class Constants {
 
 	public static final boolean SITE_IS_SOLEIL() {
 		return getProperty(SITE_PROPERTY).equals(SITE_SOLEIL); // && DATABASE_IS_ORACLE(); //TODO
+	}
+
+	public static final boolean SITE_IS_HZB() {
+		return getProperty(SITE_PROPERTY).equals(SITE_HZB);
 	}
 
 	public static final boolean SITE_IS_GENERIC() {
@@ -135,6 +141,9 @@ public final class Constants {
 		}
         if (SITE_IS_ESRF()) {
             return SITE.ESRF;
+        }
+		if (SITE_IS_HZB()) {
+            return SITE.HZB;
         }
 		return SITE.GENERIC;
 	}
@@ -904,6 +913,8 @@ public final class Constants {
 	public static final String[] CONTAINER_CAPACITY_SOLEIL = { "10", "16", "6", "0" };
 
 	public static final String[] CONTAINER_CAPACITY_ALBA = { "10", "6", "0" };
+
+	public static final String[] CONTAINER_CAPACITY_HZB = { "10", "12", "6", "0" };
 
 	public static final String[] CONTAINER_CAPACITY = (SITE_IS_ESRF()) ? CONTAINER_CAPACITY_ESRF
 			: (SITE_IS_DLS()) ? CONTAINER_CAPACITY_DLS : (SITE_IS_MAXIV()) ? CONTAINER_CAPACITY_MAXIV

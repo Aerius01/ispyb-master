@@ -71,13 +71,16 @@
 			<artifactId>commons-compress</artifactId>
 			<version>1.19</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.3</version>
 		</dependency>
-
+		<dependency>
+                        <groupId>com.unboundid</groupId>
+                        <artifactId>unboundid-ldapsdk</artifactId>
+                        <version>7.0.1</version>
+                </dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -169,6 +172,15 @@
 			</activation>
 		</profile>
 		<profile>
+			<id>ispyb.site-HZB</id>
+			<activation>
+				<property>
+					<name>ispyb.site</name>
+					<value>HZB</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
 			<id>ispyb.site-GENERIC</id>
 			<activation>
 				<property>
@@ -231,6 +243,11 @@
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
 			</plugin>
 			<!-- The WildFly plugin deploys your ear to a local JBoss AS container -->
 			<!-- Due to Maven's lack of intelligence with EARs we need to configure 

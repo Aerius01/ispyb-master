@@ -340,7 +340,7 @@ public class ToolsForShippingWebService {
 					.getLocalService(Proposal3Service.class);
 			
 			List<String> groups = null;
-			if(Constants.SITE_IS_MAXIV()) {
+			if(Constants.SITE_IS_MAXIV() || Constants.SITE_IS_HZB()) {
 				List<Proposal3VO> props = proposalService.findByLoginName(login);
 				if(props.size() >= 1){
 					Proposal3VO prop = props.get(0);
@@ -374,7 +374,8 @@ public class ToolsForShippingWebService {
 					}
 				}
 			}
-			
+	
+
 			if (proposalValues != null && !proposalValues.isEmpty()) {
 				LOG.debug("findProposalByLoginAndBeamline: "+proposalValues.size() +" proposals found in the ISPyB database");
 				LOG.debug("findProposalByLoginAndBeamline: check if there is a proposal with a current active session (only for accademic experiments)");
