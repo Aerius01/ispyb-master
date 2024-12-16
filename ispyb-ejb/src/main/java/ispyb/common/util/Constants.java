@@ -252,6 +252,14 @@ public final class Constants {
 	
 	public static final String LDAP_credential = SITE_IS_MAXIV() ? getProperty("ldap.credential") : "";
 
+	public static final String LDAP_Server = getProperty("ldap.server");
+	public static final String LDAP_Principal_DN_Prefix = getProperty("ldap.principal.dn.prefix");
+	public static final String LDAP_Principal_DN_Suffix = getProperty("ldap.principal.dn.suffix");
+	public static final String LDAP_GroupUniqueMemberName = getProperty("ldap.group.unique.member.name");
+	public static final String LDAP_GroupAttributeID = getProperty("ldap.group.attribute.id");
+	public static final String LDAP_GroupCtxDN = getProperty("ldap.group.ctx.dn");
+
+
 	/*
 	 * login prefix
 	 */

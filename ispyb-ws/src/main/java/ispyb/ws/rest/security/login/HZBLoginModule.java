@@ -48,22 +48,38 @@ but the only way to authenticate a user is by instantiating a new LdapContext wh
 over port 389.
 **/
 
+import ispyb.common.util.Constants;
+
 public class HZBLoginModule {
+	  /** David James: These values are hardcoded here because ispyb-ws is a separate module from ispyb-ejb, and therefore
+	  I don't think they can be sourced from the ispyb-ejb pom.xml file using the ispyb.site-hzb profile, and neither do
+	  I think this module can reach the Constants.java file. I have not investigated this claim very deeply though. I ran
+	  a simple import of ispyb.common.util.Constants as is the case with:
+	  /ispyb-core/ispyb-master/ispyb-ws/src/main/java/ispyb/ws/rest/proposal/DewarRestWebService.java, however when I print
+	  the values they are all null for some reason. Not a priority so leaving it for now.
+
+	  private       static String server = Constants.LDAP_Server;
+          private       static String principalDNPrefix = Constants.LDAP_Principal_DN_Prefix;
+          private       static String principalDNSuffix = Constants.LDAP_Principal_DN_Suffix;
+          private       static String groupUniqueMemberName = Constants.LDAP_GroupUniqueMemberName;
+          private       static String groupAttributeID = Constants.LDAP_GroupAttributeID;
+          private       static String groupCtxDN = Constants.LDAP_GroupCtxDN; **/
+
+	  private	static String server = "vsrv9.exp1401.bessy.de";
 	  private	static String principalDNPrefix = "uid=";
 	  private	static String principalDNSuffix = ",ou=People,dc=psf,dc=bessy,dc=de";
 	  private	static String groupUniqueMemberName = "uniqueMember";
 	  private	static String groupAttributeID = "cn";
 	  private	static String groupCtxDN = "ou=ispyb,ou=Group,dc=psf,dc=bessy,dc=de";
-	  private	static String server = "vsrv9.exp1401.bessy.de";
 
 	  // Note that this is the standard java trust store path .../{java-version}/jre/lib/security/cacerts"
 	  private	static String trustStorePath = "/ispyb-core/dependencies/jdk1.8.0_421/jre/lib/security/cacerts";
 
 	public static List<String> authenticate(String username, String password)
 			throws Exception {
-		
+
 		List<String> myRoles = new ArrayList<String>();
-							
+
 		if (!password.isEmpty()){
 			// Create the connection to the LDAP server over the non-secured port 389, and then start the
 			// TLS encyrption

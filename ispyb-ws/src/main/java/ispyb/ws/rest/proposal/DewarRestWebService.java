@@ -431,16 +431,17 @@ public class DewarRestWebService extends RestWebService {
 		// PDF Labels generation
 		PDFFormFiller pdfFormFiller = new PDFFormFiller();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				
+
 		//TODO put in properties or find a way to read correctly the pdf
-		
+
 		String path= Constants.TEMPLATE_PDF_PARCEL_LABELS_WORLDCOURIER_PYARCH_PATH;
-		
+
 		if (returnLabContact.getDefaultCourrierCompany() != null && returnLabContact.getDefaultCourrierCompany().equals(Constants.SHIPPING_DELIVERY_AGENT_NAME_WORLDCOURIER)) {
 			path= Constants.TEMPLATE_PDF_PARCEL_LABELS_WORLDCOURIER_PYARCH_PATH;
 		} else {
 			path= Constants.TEMPLATE_PDF_PARCEL_LABELS_PYARCH_PATH;
 		}
+
 		pdfFormFiller.init(path,outputStream);
 
 		// Date format

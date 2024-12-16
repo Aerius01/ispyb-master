@@ -631,12 +631,18 @@
 				<ispyb.authentication.method>LDAP</ispyb.authentication.method>
 				<ispyb.authorisation.proposals.source>database</ispyb.authorisation.proposals.source>
 							
-				<ldap.employee.resource>ldap://vsrv9.exp1401.bessy.de:389/</ldap.employee.resource>
-                                <ldap.people>ou=People,dc=esrf,dc=fr</ldap.people>
-                                <ldap.attribute>uid</ldap.attribute>
+				<ldap.server>ldap://vsrv9.exp1401.bessy.de:389</ldap.server>
+				<ldap.principal.dn.prefix>uid=</ldap.principal.dn.prefix>
+				<ldap.principal.dn.suffix>,ou=People,dc=psf,dc=bessy,dc=de</ldap.principal.dn.suffix>
+				<ldap.group.unique.member.name>uniqueMember</ldap.group.unique.member.name>
+				<ldap.group.attribute.id>cn</ldap.group.attribute.id>
+				<ldap.group.ctx.dn>ou=ispyb,ou=Group,dc=psf,dc=bessy,dc=de</ldap.group.ctx.dn>
 
-				<ispyb.root.folder>${java.io.tmpdir}/${user.name}/ispyb/</ispyb.root.folder>
+				<ispyb.root.folder>/ispyb-core/ispyb-master/</ispyb.root.folder>
 				<ispyb.uploaded.root.folder>${ispyb.root.folder}upload/</ispyb.uploaded.root.folder>
+				<ispyb.upload.folder.pdf>${ispyb.root.folder}ispyb-ejb/src/main/resources/pdf/</ispyb.upload.folder.pdf>
+
+				<dewar.label.template>ParcelLabelsTemplate_MAXIV.pdf</dewar.label.template>
 				
 				<ispyb.server.name.prod>localhost</ispyb.server.name.prod>
 				<ispyb.server.name.prod.alias>localhost</ispyb.server.name.prod.alias>
